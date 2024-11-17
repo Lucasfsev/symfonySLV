@@ -7,9 +7,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+
 
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
-class Customer implements \Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface
+class Customer implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -40,9 +43,6 @@ class Customer implements \Symfony\Component\Security\Core\User\PasswordAuthenti
     #[ORM\Column(length: 50)]
     private ?string $drivingLicense = null;
 
-    /**
-     * @var Collection<int, Reservation>
-     */
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'customer')]
     private Collection $reservations;
 
@@ -146,21 +146,18 @@ class Customer implements \Symfony\Component\Security\Core\User\PasswordAuthenti
         return $this;
     }
 
-    public function isDrivingLicense(): ?bool
+    public function getDrivingLicense(): ?string
     {
         return $this->drivingLicense;
     }
 
-    public function setDrivingLicense(bool $drivingLicense): static
+    public function setDrivingLicense(string $drivingLicense): static
     {
         $this->drivingLicense = $drivingLicense;
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, Reservation>
-     */
     public function getReservations(): Collection
     {
         return $this->reservations;
@@ -188,6 +185,10 @@ class Customer implements \Symfony\Component\Security\Core\User\PasswordAuthenti
         return $this;
     }
 
+    public function getUsername(): string
+    {
+        return $this->email;
+    }
     public function getRoles(): array
     {
         return $this->roles;
@@ -210,5 +211,19 @@ class Customer implements \Symfony\Component\Security\Core\User\PasswordAuthenti
         $this->password = $password;
 
         return $this;
+    }
+
+    public function getSalt(): ?string
+    {
+        return null;
+    }
+
+    public function eraseCredentials(): void
+    {
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
     }
 }
