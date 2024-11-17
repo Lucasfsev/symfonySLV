@@ -5,10 +5,11 @@ namespace App\Entity;
 use App\Repository\CustomerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
-class Customer
+class Customer implements \Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -36,14 +37,20 @@ class Customer
     #[ORM\Column(length: 50)]
     private ?string $phone = null;
 
-    #[ORM\Column]
-    private ?bool $drivingLicense = null;
+    #[ORM\Column(length: 50)]
+    private ?string $drivingLicense = null;
 
     /**
      * @var Collection<int, Reservation>
      */
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'customer')]
     private Collection $reservations;
+
+    #[ORM\Column(type: Types::ARRAY)]
+    private array $roles = [];
+
+    #[ORM\Column(length: 255)]
+    private ?string $password = null;
 
     public function __construct()
     {
@@ -177,6 +184,30 @@ class Customer
                 $reservation->setCustomer(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getRoles(): array
+    {
+        return $this->roles;
+    }
+
+    public function setRoles(array $roles): static
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): static
+    {
+        $this->password = $password;
 
         return $this;
     }
