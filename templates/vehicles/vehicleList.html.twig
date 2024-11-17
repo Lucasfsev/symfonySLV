@@ -1,17 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Accueil{% endblock %}
+{% block title %}Tous les véhicules{% endblock %}
 
 {% block body %}
     <div class="container my-5">
-        <h1 class="text-center">Accueil</h1>
-        <h4 class="text-center text-secondary">Découvrez nos véhicules</h4>
+        <h1 class="text-center">Tous nos véhicules</h1>
+        <h4 class="text-center text-secondary">Choisissez le véhicule parfait pour votre voyage</h4>
 
         <div class="mt-5">
-            <h3 class="mb-4">Nos véhicules phares</h3>
+            <h3 class="mb-4">Liste des véhicules</h3>
             <div class="row g-4">
                 {% for vehicle in vehicles %}
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="card bg-dark text-white h-100">
                             <img src="{{ vehicle.picturePath }}" class="card-img-top" alt="{{ vehicle.model.name }}" style="height: 200px; object-fit: cover;">
                             <div class="card-body">

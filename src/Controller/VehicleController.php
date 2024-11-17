@@ -7,14 +7,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-class HomeController extends AbstractController
+class VehicleController extends AbstractController
 {
-    #[Route('/', name: 'home')]
-    public function index(VehicleRepository $vehicleRepository): Response
+    #[Route('/vehicles', name: 'vehicle_list')]
+    public function list(VehicleRepository $vehicleRepository): Response
     {
-        $vehicles = $vehicleRepository->findBy([], null, 2);
+        $vehicles = $vehicleRepository->findAll();
 
-        return $this->render('home/index.html.twig', [
+        return $this->render('vehicles/vehicleList.html.twig', [
             'vehicles' => $vehicles,
         ]);
     }

@@ -23,7 +23,6 @@ class AppFixtures extends Fixture
     public function __construct(UserPasswordHasherInterface $hasher)
     {
         $this->hasher = $hasher;
-
     }
 
     public function load(ObjectManager $manager): void
@@ -37,13 +36,15 @@ class AppFixtures extends Fixture
             $vehicleType->setName($type);
             $typeEntities[] = $vehicleType;
         }
+
         $brands = [
             'BMW' => [
                 'Serie 1',
                 'Serie 3',
                 'Serie 5',
                 'X5',
-                'Z4'],
+                'Z4'
+            ],
             'Audi' => [
                 'A1',
                 'A3',
@@ -51,40 +52,44 @@ class AppFixtures extends Fixture
                 'A6',
                 'Q3',
                 'Q5',
-                'Q7'],
+                'Q7'
+            ],
             'Mercedes' => [
                 'Classe A',
                 'Classe C',
                 'GLA',
                 'GLE',
                 'Sprinter',
-                'Vito'],
+                'Vito'
+            ],
             'Tesla' => [
                 'Model S',
                 'Model 3',
                 'Model X',
                 'Model Y',
-                'Cybertruck'],
+                'Cybertruck'
+            ],
             'Volkswagen' => [
                 'Polo',
                 'Golf',
                 'Passat',
                 'Tiguan',
                 'Touareg',
-                'Transporter'],
+                'Transporter'
+            ]
         ];
+
         $brandEntities = [];
         foreach ($brands as $brand => $models) {
             $brandEntity = new Brand();
             $brandEntity->setName($brand);
             $brandEntities[] = $brandEntity;
-        }
-        $modelEntities = [];
-        foreach ($models as $model) {
-            $modelEntity = new Model();
-            $modelEntity->setName($model);
-            $modelEntity->setBrand($brandEntity);
-            $modelEntities[] = $modelEntity;
+            foreach ($models as $model) {
+                $modelEntity = new Model();
+                $modelEntity->setName($model);
+                $modelEntity->setBrand($brandEntity);
+                $modelEntities[] = $modelEntity;
+            }
         }
 
         $options = [
@@ -106,19 +111,18 @@ class AppFixtures extends Fixture
         }
 
         $vehicleEntities = [];
-        foreach ($modelEntities as $models) {
+        foreach ($modelEntities as $model) {
             $vehicle = new Vehicle();
             $vehicle->setModel($model);
             $vehicle->setType($typeEntities[random_int(0, count($typeEntities) - 1)]);
             $vehicle->setPrice(random_int(45, 500));
-            $vehicle->setnumberKilometers(random_int(0, 300000));
-            $vehicle->setnumberPlate(sprintf('%s-%s-%s', chr(random_int(65, 90)), random_int(100, 999), chr(random_int(65, 90))));
-            $vehicle->setyearOfVehicle(random_int(1980, 2024));
+            $vehicle->setNumberKilometers(random_int(0, 300000));
+            $vehicle->setNumberPlate(sprintf('%s-%s-%s', chr(random_int(65, 90)), random_int(100, 999), chr(random_int(65, 90))));
+            $vehicle->setYearOfVehicle(random_int(1980, 2024));
             $vehicle->setCapacity(random_int(2, 7));
-            $vehicle->setpicturePath('/image/vehicle' . random_int(1, 9) . '.jpg');
+            $vehicle->setPicturePath('/images/vehicle' . random_int(1, 9) . '.jpg');
             $vehicle->addOption($optionEntities[random_int(0, count($optionEntities) - 1)]);
             $vehicleEntities[] = $vehicle;
-
         }
 
         $customers = [
@@ -142,7 +146,7 @@ class AppFixtures extends Fixture
                 'city' => 'Paris',
                 'email' => 'marie.martin@example.com',
                 'phone' => '0987654321',
-                'drivingLicense' =>'Permis Poids Lourd',
+                'drivingLicense' => 'Permis Poids Lourd',
                 'roles' => 'user',
                 'reservations' => []
             ],
@@ -180,22 +184,22 @@ class AppFixtures extends Fixture
                 'phone' => '0701122334',
                 'drivingLicense' => 'Permis b',
                 'roles' => 'user',
-
                 'reservations' => []
             ]
         ];
-        $customersEntities = [];
+
+        $customerEntities = [];
         foreach ($customers as $customer) {
             $customerEntity = new Customer();
-            $customerEntity->setLastName($customer[0]);
-            $customerEntity->setFirstName($customer[1]);
-            $customerEntity->setAddress($customer[2]);
-            $customerEntity->setPostCode($customer[3]);
-            $customerEntity->setCity($customer[4]);
-            $customerEntity->setEmail($customer[5]);
-            $customerEntity->setPhone($customer[6]);
-            $customerEntity->setDrivingLicense($customer[7]);
-            $customerEntity->setRoles(['User']);
+            $customerEntity->setLastName($customer['lastName']);
+            $customerEntity->setFirstName($customer['firstName']);
+            $customerEntity->setAddress($customer['address']);
+            $customerEntity->setPostCode($customer['postCode']);
+            $customerEntity->setCity($customer['city']);
+            $customerEntity->setEmail($customer['email']);
+            $customerEntity->setPhone($customer['phone']);
+            $customerEntity->setDrivingLicense($customer['drivingLicense']);
+            $customerEntity->setRoles([$customer['roles']]);
             $customerEntity->setPassword($this->hasher->hashPassword($customerEntity, 'password'));
             $customerEntities[] = $customerEntity;
         }
@@ -203,7 +207,7 @@ class AppFixtures extends Fixture
         $admin = new Customer();
         $admin->setFirstName('Admin');
         $admin->setLastName('Admin');
-        $admin->setAddress('random adress');
+        $admin->setAddress('random address');
         $admin->setPostCode('123456');
         $admin->setCity('Random city');
         $admin->setEmail('admin@admin.com');
@@ -217,7 +221,7 @@ class AppFixtures extends Fixture
             'En cours de validation', 'Réservation validée', 'Réservation annulée'
         ];
         $stateEntities = [];
-        foreach ($states as $state){
+        foreach ($states as $state) {
             $stateEntity = new State();
             $stateEntity->setStatus($state);
             $stateEntities[] = $stateEntity;
@@ -235,8 +239,9 @@ class AppFixtures extends Fixture
             ['2022-04-01', '2022-04-02', 'confirmée'],
             ['2022-04-03', '2022-04-04', 'en attente']
         ];
+
         $reservationsEntities = [];
-        foreach ($reservations as $reservation){
+        foreach ($reservations as $reservation) {
             $reservationEntity = new Reservation();
             $reservationEntity->setDateStart(new \DateTimeImmutable($reservation[0]));
             $reservationEntity->setDateEnd(new \DateTimeImmutable($reservation[1]));
@@ -244,45 +249,51 @@ class AppFixtures extends Fixture
             $reservationEntity->setVehicle($vehicleEntities[random_int(0, count($vehicleEntities) - 1)]);
             $reservationEntity->setReference('REF-' . strtoupper(uniqid()));
             $reservationEntity->setState($stateEntities[0]);
-            $dateStart = $reservationEntity->getDateStart();
-            $dateEnd = $reservationEntity->getDateEnd();
-            $numberOfDays = $dateStart->diff($dateEnd)->days;
-            $reservationEntity->setNumberRentalDay($numberOfDays);
-            $reservationPrice = $vehicle->getPrice();
-            $totalCost = $reservationPrice * $numberOfDays;
-            $reservationEntity->setTotalCost(number_format($totalCost, 2));
+            $startDate = new \DateTimeImmutable($reservation[0]);
+            $endDate = new \DateTimeImmutable($reservation[1]);
+            $numberRentalDay = $startDate->diff($endDate)->days;
+            $reservationEntity->setNumberRentalDay($numberRentalDay);
+            $vehicle = $reservationEntity->getVehicle();
+            $vehiclePrice = $vehicle->getPrice();
+            $totalCost = $vehiclePrice * $numberRentalDay;
+            $reservationEntity->setTotalCost($totalCost);
             $reservationsEntities[] = $reservationEntity;
 
+            $manager->persist($reservationEntity);
+        }
 
-            foreach ($typeEntities as $type) {
-                $manager->persist($type);
-            }
-            foreach ($brandEntities as $brand) {
-                $manager->persist($brand);
-            }
-            foreach ($modelEntities as $model) {
-                $manager->persist($model);
-            }
-            foreach ($optionEntities as $option) {
-                $manager->persist($option);
-            }
-            foreach ($vehicleEntities as $vehicle) {
-                $manager->persist($vehicle);
-            }
-            foreach ($customerEntities as $customer) {
-                $manager->persist($customer);
-            }
-            foreach ($stateEntities as $state) {
-                $manager->persist($state);
-            }
-            foreach ($reservationsEntities as $reservation) {
-                $manager->persist($reservation);
-            }
+        foreach ($typeEntities as $type) {
+            $manager->persist($type);
+        }
 
+        foreach ($brandEntities as $brand) {
+            $manager->persist($brand);
+        }
 
+        foreach ($modelEntities as $model) {
+            $manager->persist($model);
+        }
 
+        foreach ($optionEntities as $option) {
+            $manager->persist($option);
+        }
 
+        foreach ($vehicleEntities as $vehicle) {
+            $manager->persist($vehicle);
+        }
+
+        foreach ($customerEntities as $customer) {
+            $manager->persist($customer);
+        }
+
+        foreach ($stateEntities as $state) {
+            $manager->persist($state);
+        }
+
+        foreach ($reservationsEntities as $reservation) {
+            $manager->persist($reservation);
+        }
 
         $manager->flush();
     }
-}}
+}
